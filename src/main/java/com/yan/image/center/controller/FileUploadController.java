@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileUploadController {
 	
 	public static final String UPLOAD_FILE_ROOT_DIR = "E:\\uploadfile\\test";
+	
+	@Value("${image.root.dir}")
+	private String imageRootDir;
 	
 	// 访问路径为：http://127.0.0.1:8080/file
 	@RequestMapping("/file")
@@ -66,20 +71,25 @@ public class FileUploadController {
 	
 	@RequestMapping("/ajaxupload")
 	@ResponseBody
-	public String ajaxupload(@RequestParam("file") MultipartFile file) {
+	public String ajaxupload(@RequestParam("file") MultipartFile file, String category) {
 		String fileName = file.getOriginalFilename();
 		if (fileName.indexOf("\\") != -1) {
 			fileName = fileName.substring(fileName.lastIndexOf("\\"));
 		}
-		String category = "image";
-		String filePath = UPLOAD_FILE_ROOT_DIR + File.separator + category;
-		File targetFile = new File(filePath);
+		//String category = "image";
+		String fileDir = imageRootDir;
+		
+		if(category != null && !"".equals(category.trim())) {
+			fileDir += File.separator + category;
+		}
+		
+		File targetFile = new File(fileDir);
 		if (!targetFile.exists()) {
 			targetFile.mkdirs();
 		}
 		FileOutputStream out = null;
 		try {
-			out = new FileOutputStream(UPLOAD_FILE_ROOT_DIR + File.separator + category + File.separator + fileName);
+			out = new FileOutputStream(fileDir + File.separator + fileName);
 			out.write(file.getBytes());
 			out.flush();
 			out.close();
