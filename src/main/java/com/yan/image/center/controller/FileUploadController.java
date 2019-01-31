@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -105,12 +106,18 @@ public class FileUploadController {
 		//String category = "image";
 		String fileDir = imageRootDir;
 		
-		if(category != null && !"".equals(category.trim())) {
-			fileDir += File.separator + category;
-		}else {
-			category = "uncategorized";
-			fileDir += File.separator + category;
-		}
+		// 一张图片可能多人上传，不同人上传的分类可能不同，存在一定冲突
+//		if(category != null && !"".equals(category.trim())) {
+//			fileDir += File.separator + category;
+//		}else {
+//			category = "uncategorized";
+//			fileDir += File.separator + category;
+//		}
+		
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+		String dateStr = simpleDateFormat.format(new Date());
+		
+		fileDir += File.separator + dateStr;
 		
 		// 图片存储的位置
 		String location = fileDir + File.separator + uuid + "." + suffix;
