@@ -5,13 +5,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.yan.image.center.mapper.ImageMainMapper;
+import com.yan.image.center.schema.ImageMain;
 
 @Controller
 public class FileUploadController {
@@ -20,6 +27,9 @@ public class FileUploadController {
 	
 	@Value("${image.root.dir}")
 	private String imageRootDir;
+	
+	@Autowired
+	private ImageMainMapper imageMainMapper;
 	
 	// 访问路径为：http://127.0.0.1:8080/file
 	@RequestMapping("/file")
@@ -72,16 +82,51 @@ public class FileUploadController {
 	@RequestMapping("/ajaxupload")
 	@ResponseBody
 	public String ajaxupload(@RequestParam("file") MultipartFile file, String category) {
+		// uuid
+		String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+		// 计算文件的md5值
+		String md5Hex = null;
+		try {
+			md5Hex = DigestUtils.md5DigestAsHex(file.getBytes());
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
 		String fileName = file.getOriginalFilename();
 		if (fileName.indexOf("\\") != -1) {
 			fileName = fileName.substring(fileName.lastIndexOf("\\"));
 		}
+		
+		// suffix
+		String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+		// 后缀名都转为小写存储
+		suffix = suffix.toLowerCase();
+		
 		//String category = "image";
 		String fileDir = imageRootDir;
 		
 		if(category != null && !"".equals(category.trim())) {
 			fileDir += File.separator + category;
+		}else {
+			category = "uncategorized";
+			fileDir += File.separator + category;
 		}
+		
+		// 图片存储的位置
+		String location = fileDir + File.separator + uuid + "." + suffix;
+		
+		// 组装ImageMain对象
+		ImageMain imageMain = new ImageMain();
+		
+		imageMain.setUuid(uuid);
+		imageMain.setMd5(md5Hex);
+		imageMain.setLocation(location);
+		imageMain.setSuffix(suffix);
+		imageMain.setValidStatus("1");
+		imageMain.setInsertTime(new Date());
+		imageMain.setUpdateTime(new Date());
+		
+		// 文件写入磁盘
 		
 		File targetFile = new File(fileDir);
 		if (!targetFile.exists()) {
@@ -89,7 +134,7 @@ public class FileUploadController {
 		}
 		FileOutputStream out = null;
 		try {
-			out = new FileOutputStream(fileDir + File.separator + fileName);
+			out = new FileOutputStream(location);
 			out.write(file.getBytes());
 			out.flush();
 			out.close();
@@ -97,6 +142,9 @@ public class FileUploadController {
 			e.printStackTrace();
 			return "上传失败";
 		}
+		
+		// 将文件数据写入数据库
+		imageMainMapper.insertImageMain(imageMain);
 		return "上传成功!";
 	}
 

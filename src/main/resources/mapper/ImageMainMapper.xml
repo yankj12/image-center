@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 指定dao -->
+<mapper namespace="com.yan.image.center.mapper.ImageMainMapper">
+
+	<insert id="insertImageMain" parameterType="com.yan.image.center.schema.ImageMain">
+    	insert into image_main 
+    	(uuid, suffix, md5, location, url, validStatus, insertTime, updateTime) 
+    	values 
+    	(#{uuid}, #{suffix}, #{md5}, #{location}, #{url}, #{validStatus}, #{insertTime}, #{updateTime})
+    </insert>
+    
+    <insert id="insertBatchImageMain" parameterType="java.util.List">
+    	insert into image_main
+    	(uuid, suffix, md5, location, url, validStatus, insertTime, updateTime) 
+    	values 
+    	<foreach collection="list" item="item" index="index" separator=",">
+            (#{item.uuid}, #{item.suffix}, #{item.md5}, #{item.location}, #{item.url}, #{item.validStatus}, #{item.insertTime}, #{item.updateTime})
+        </foreach>
+    </insert>
+    
+    <select id="findImageMainByUUID" parameterType="String" resultType="com.yan.image.center.schema.ImageMain">
+        SELECT * FROM image_main WHERE uuid = #{uuid}
+    </select>
+    
+    <select id="findImageMainByMD5" parameterType="String" resultType="com.yan.image.center.schema.ImageMain">
+        SELECT * FROM image_main WHERE md5 = #{md5}
+    </select>
+    
+	<select id="countImageMainsByCondition" parameterType="String" resultType="long">
+        SELECT count(*) FROM image_main
+        <trim prefix="where" prefixOverrides="and|or"> 
+    		<if test="uuid != null and uuid != ''">
+    			uuid=#{uuid}
+    		</if>
+    		<if test="md5 != null and md5 != ''">
+    			and md5=#{md5}
+    		</if>
+    		<if test="suffix != null and suffix != ''">
+    			and suffix=#{suffix}
+    		</if>
+    		<if test="validStatus != null and validStatus != ''">
+    			and validStatus = #{validStatus}
+    		</if>
+    		
+    	</trim>
+    </select>
+    
+    <select id="findImageMainsByCondition" parameterType="java.util.Map"  resultType="com.yan.image.center.schema.ImageMain">
+    	select * from image_main
+    	<trim prefix="where" prefixOverrides="and|or"> 
+    		<if test="uuid != null and uuid != ''">
+    			uuid=#{uuid}
+    		</if>
+    		<if test="md5 != null and md5 != ''">
+    			and md5=#{md5}
+    		</if>
+    		<if test="suffix != null and suffix != ''">
+    			and suffix=#{suffix}
+    		</if>
+    		<if test="validStatus != null and validStatus != ''">
+    			and validStatus = #{validStatus}
+    		</if>
+    		
+    	</trim>
+    	order by updateTime desc
+    	limit #{offset},#{pageSize}
+    </select>
+    
+    <update id="updateValidStatusByUUID" parameterType="com.yan.image.center.schema.ImageMain">
+    	update image_main set validStatus=#{validStatus}, updateTime=#{updateTime}
+    	where uuid=#{uuid}
+    </update>
+</mapper>
