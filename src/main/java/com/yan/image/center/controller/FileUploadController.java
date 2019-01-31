@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.yan.image.center.mapper.ImageMainMapper;
+import com.yan.image.center.mapper.ImageRefMapper;
 import com.yan.image.center.schema.ImageMain;
+import com.yan.image.center.schema.ImageRef;
 
 @Controller
 public class FileUploadController {
@@ -31,6 +34,9 @@ public class FileUploadController {
 	
 	@Autowired
 	private ImageMainMapper imageMainMapper;
+	
+	@Autowired
+	private ImageRefMapper imageRefMapper;
 	
 	// 访问路径为：http://127.0.0.1:8080/file
 	@RequestMapping("/file")
@@ -82,7 +88,7 @@ public class FileUploadController {
 	
 	@RequestMapping("/ajaxupload")
 	@ResponseBody
-	public String ajaxupload(@RequestParam("file") MultipartFile file, String category) {
+	public String ajaxupload(@RequestParam("file") MultipartFile file, String userCode, String category) {
 		// uuid
 		String uuid = UUID.randomUUID().toString().replaceAll("-", "");
 		// 计算文件的md5值
@@ -93,65 +99,89 @@ public class FileUploadController {
 			e1.printStackTrace();
 		}
 		
-		String fileName = file.getOriginalFilename();
-		if (fileName.indexOf("\\") != -1) {
-			fileName = fileName.substring(fileName.lastIndexOf("\\"));
+		if(md5Hex != null && !"".equals(md5Hex.trim())) {
+			
+			String fileName = file.getOriginalFilename();
+			if (fileName.indexOf("\\") != -1) {
+				fileName = fileName.substring(fileName.lastIndexOf("\\"));
+			}
+			
+			// suffix
+			String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+			// 后缀名都转为小写存储
+			suffix = suffix.toLowerCase();
+			
+			// 不带后缀名得文件名称
+			String fileNameWithoutSuffix = fileName.substring(0, fileName.lastIndexOf("."));
+			
+			ImageRef imageRef = new ImageRef();
+			imageRef.setUuid(uuid);
+			imageRef.setMd5(md5Hex);
+			imageRef.setDisplayName(fileNameWithoutSuffix);
+			imageRef.setCategory(category);
+			imageRef.setUserCode(userCode);
+			imageRef.setValidStatus("1");
+			imageRef.setInsertTime(new Date());
+			imageRef.setUpdateTime(new Date());
+			
+			
+			// 根据md5值判断下文件是否已经在磁盘上
+			List<ImageMain> imageMainTemps =  imageMainMapper.findImageMainByMD5(md5Hex);
+			
+			if(imageMainTemps != null && imageMainTemps.size() > 0) {
+				// 如果相同md5值得文件已经上传过了，不再写入到磁盘，不再写入ImageMain对象，写入到ImageRef对象
+				imageRefMapper.insertImageRef(imageRef);
+			}else {
+				// 相同md5值得文件没有上传过
+				
+				//String category = "image";
+				String fileDir = imageRootDir;
+				
+				// 一张图片可能多人上传，不同人上传的分类可能不同，存在一定冲突
+				// 所以写入磁盘时根据日期区分文件夹比较合适
+				
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+				String dateStr = simpleDateFormat.format(new Date());
+				
+				fileDir += File.separator + dateStr;
+				
+				// 图片存储的位置
+				String location = fileDir + File.separator + uuid + "." + suffix;
+				
+				// 组装ImageMain对象
+				ImageMain imageMain = new ImageMain();
+				
+				imageMain.setUuid(uuid);
+				imageMain.setMd5(md5Hex);
+				imageMain.setLocation(location);
+				imageMain.setSuffix(suffix);
+				imageMain.setValidStatus("1");
+				imageMain.setInsertTime(new Date());
+				imageMain.setUpdateTime(new Date());
+				
+				// 文件写入磁盘
+				
+				File targetFile = new File(fileDir);
+				if (!targetFile.exists()) {
+					targetFile.mkdirs();
+				}
+				FileOutputStream out = null;
+				try {
+					out = new FileOutputStream(location);
+					out.write(file.getBytes());
+					out.flush();
+					out.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+					return "上传失败";
+				}
+				
+				// 将文件数据写入数据库
+				imageMainMapper.insertImageMain(imageMain);
+				imageRefMapper.insertImageRef(imageRef);
+			}
+			
 		}
-		
-		// suffix
-		String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
-		// 后缀名都转为小写存储
-		suffix = suffix.toLowerCase();
-		
-		//String category = "image";
-		String fileDir = imageRootDir;
-		
-		// 一张图片可能多人上传，不同人上传的分类可能不同，存在一定冲突
-//		if(category != null && !"".equals(category.trim())) {
-//			fileDir += File.separator + category;
-//		}else {
-//			category = "uncategorized";
-//			fileDir += File.separator + category;
-//		}
-		
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-		String dateStr = simpleDateFormat.format(new Date());
-		
-		fileDir += File.separator + dateStr;
-		
-		// 图片存储的位置
-		String location = fileDir + File.separator + uuid + "." + suffix;
-		
-		// 组装ImageMain对象
-		ImageMain imageMain = new ImageMain();
-		
-		imageMain.setUuid(uuid);
-		imageMain.setMd5(md5Hex);
-		imageMain.setLocation(location);
-		imageMain.setSuffix(suffix);
-		imageMain.setValidStatus("1");
-		imageMain.setInsertTime(new Date());
-		imageMain.setUpdateTime(new Date());
-		
-		// 文件写入磁盘
-		
-		File targetFile = new File(fileDir);
-		if (!targetFile.exists()) {
-			targetFile.mkdirs();
-		}
-		FileOutputStream out = null;
-		try {
-			out = new FileOutputStream(location);
-			out.write(file.getBytes());
-			out.flush();
-			out.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "上传失败";
-		}
-		
-		// 将文件数据写入数据库
-		imageMainMapper.insertImageMain(imageMain);
 		return "上传成功!";
 	}
 

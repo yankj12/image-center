@@ -20,3 +20,25 @@ CREATE INDEX idx_image_main_uuid ON image_main (uuid);
 CREATE INDEX idx_image_main_md5 ON image_main (md5);
 
 alter table image_main add md5 VARCHAR(40) DEFAULT '' after suffix;
+
+
+
+-- 创建image_ref表
+CREATE TABLE
+    image_ref
+    (
+        id BIGINT NOT NULL AUTO_INCREMENT,
+        uuid VARCHAR(32) DEFAULT '',
+        md5 VARCHAR(40) DEFAULT '',
+        displayName VARCHAR(255) DEFAULT '',
+        userCode VARCHAR(20) DEFAULT '',
+        category VARCHAR(20) DEFAULT '',
+		validStatus VARCHAR(2)DEFAULT '1',
+        insertTime DATETIME,
+        updateTime DATETIME,
+        PRIMARY KEY (id)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE INDEX idx_image_ref_uuid ON image_ref (uuid);
+CREATE INDEX idx_image_ref_md5 ON image_ref (md5);
