@@ -88,7 +88,7 @@ public class FileUploadController {
 	
 	@RequestMapping("/ajaxupload")
 	@ResponseBody
-	public String ajaxupload(@RequestParam("file") MultipartFile file, String userCode, String category) {
+	public String ajaxupload(@RequestParam("file") MultipartFile file, String userCode, String category, String fileNewName) {
 		// uuid
 		String uuid = UUID.randomUUID().toString().replaceAll("-", "");
 		// 计算文件的md5值
@@ -117,7 +117,13 @@ public class FileUploadController {
 			ImageRef imageRef = new ImageRef();
 			imageRef.setUuid(uuid);
 			imageRef.setMd5(md5Hex);
-			imageRef.setDisplayName(fileNameWithoutSuffix);
+			
+			// 如果前台传入了文件重命名参数，那么文件展示名称设置为重命名后的文件名称，否则展示原文件名
+			if(fileNewName != null && !"".equals(fileNewName.trim())) {
+				imageRef.setDisplayName(fileNewName);
+			}else {
+				imageRef.setDisplayName(fileNameWithoutSuffix);
+			}
 			imageRef.setCategory(category);
 			imageRef.setUserCode(userCode);
 			imageRef.setValidStatus("1");
