@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 指定dao -->
+<mapper namespace="com.yan.image.center.mapper.ImageTagMapper">
+
+	<insert id="insertImageTag" parameterType="com.yan.image.center.schema.ImageTag">
+    	insert into image_tag 
+    	(uuid, md5, tagName, validStatus, insertTime, updateTime) 
+    	values 
+    	(#{uuid}, #{md5}, #{tagName}, #{validStatus}, #{insertTime}, #{updateTime})
+    </insert>
+    
+    <insert id="insertBatchImageTag" parameterType="java.util.List">
+    	insert into image_tag
+    	(uuid, md5, tagName, validStatus, insertTime, updateTime) 
+    	values 
+    	<foreach collection="list" item="item" index="index" separator=",">
+            (#{item.uuid}, #{item.md5}, #{item.tagName}, #{item.validStatus}, #{item.insertTime}, #{item.updateTime})
+        </foreach>
+    </insert>
+    
+    <select id="findImageTagByUUID" parameterType="String" resultType="com.yan.image.center.schema.ImageTag">
+        SELECT * FROM image_tag WHERE uuid = #{uuid}
+    </select>
+    
+    <select id="findImageTagByMD5" parameterType="String" resultType="com.yan.image.center.schema.ImageTag">
+        SELECT * FROM image_tag WHERE md5 = #{md5}
+    </select>
+    
+	<select id="countImageTagsByCondition" parameterType="String" resultType="long">
+        SELECT count(*) FROM image_tag
+        <trim prefix="where" prefixOverrides="and|or"> 
+    		<if test="uuid != null and uuid != ''">
+    			uuid=#{uuid}
+    		</if>
+    		<if test="md5 != null and md5 != ''">
+    			and md5=#{md5}
+    		</if>
+    		<if test="tagName != null and tagName != ''">
+    			and tagName=#{tagName}
+    		</if>
+    		<if test="validStatus != null and validStatus != ''">
+    			and validStatus = #{validStatus}
+    		</if>
+    		
+    	</trim>
+    </select>
+    
+    <select id="findImageTagsByCondition" parameterType="java.util.Map"  resultType="com.yan.image.center.schema.ImageTag">
+    	select * from image_tag
+    	<trim prefix="where" prefixOverrides="and|or"> 
+    		<if test="uuid != null and uuid != ''">
+    			uuid=#{uuid}
+    		</if>
+    		<if test="md5 != null and md5 != ''">
+    			and md5=#{md5}
+    		</if>
+    		<if test="tagName != null and tagName != ''">
+    			and tagName=#{tagName}
+    		</if>
+    		<if test="validStatus != null and validStatus != ''">
+    			and validStatus = #{validStatus}
+    		</if>
+    		
+    	</trim>
+    	order by updateTime desc
+    	limit #{offset},#{pageSize}
+    </select>
+    
+    <update id="updateValidStatusByUUID" parameterType="com.yan.image.center.schema.ImageTag">
+    	update image_tag set validStatus=#{validStatus}, updateTime=#{updateTime}
+    	where uuid=#{uuid}
+    </update>
+</mapper>
