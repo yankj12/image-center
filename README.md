@@ -14,6 +14,35 @@
 - 提供图床功能
 - 支持根据条件检索图片（名称、分类、标签等）
 
+## 图片服务器
+
+目前使用的是nginx作为图片服务器
+
+### 安装nginx
+
+下载nginx的windows版本，解压，使用start nginx命令启动即可
+
+[windows上使用nginx](http://nginx.org/en/docs/windows.html)
+
+### nginx提供图片服务
+
+在nginx.conf文件中增加location /images/部分
+
+```nginx.conf
+    server {
+        listen       80;
+        server_name  localhost;
+
+		location /images/ {
+			root E:/images/uploadfile;
+			index  index.html index.htm;
+		}
+```
+
+这样就可以提供`http://localhost/images/20190205/6f36c28d9f854125976880544c999f7e.jpg`的图片服务了
+
+需要注意的是我们url中包含/images/，我在windows上测试的时候，root对应的文件夹（本例中是E:/images/uploadfile）中必须包含一个文件夹images才可以提供正常的服务，否则会报文件找不到的错误
+
 ## 架构设计
 
 架构设计v0.1版主要考虑存储和提供图片url，其他方面先不考虑，可以参考下图
