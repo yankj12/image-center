@@ -32,6 +32,9 @@ public class FileUploadController {
 	@Value("${image.root.dir}")
 	private String imageRootDir;
 	
+	@Value("${image.server.root.url}")
+	private String imageServerRootUrl;
+	
 	@Autowired
 	private ImageMainMapper imageMainMapper;
 	
@@ -140,19 +143,33 @@ public class FileUploadController {
 			}else {
 				// 相同md5值得文件没有上传过
 				
-				//String category = "image";
-				String fileDir = imageRootDir;
 				
 				// 一张图片可能多人上传，不同人上传的分类可能不同，存在一定冲突
 				// 所以写入磁盘时根据日期区分文件夹比较合适
 				
+				
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
 				String dateStr = simpleDateFormat.format(new Date());
-				
-				fileDir += File.separator + dateStr;
+
+				// 图片在磁盘存储的文件夹
+				String fileDir = null;
+				if(imageRootDir.endsWith("/")) {
+					fileDir = imageRootDir + dateStr;
+				}else {
+					fileDir = imageRootDir + "/" + dateStr;
+				}
 				
 				// 图片存储的位置
-				String location = fileDir + File.separator + uuid + "." + suffix;
+				String location = fileDir + "/" + uuid + "." + suffix;
+				
+				// 组装图片的url
+				String url = null;
+				
+				if(imageServerRootUrl.endsWith("/")) {
+					url = imageServerRootUrl + dateStr + "/" + uuid + "." + suffix;
+				}else {
+					url = imageServerRootUrl + "/" + dateStr + "/" + uuid + "." + suffix;
+				}
 				
 				// 组装ImageMain对象
 				ImageMain imageMain = new ImageMain();
@@ -160,6 +177,8 @@ public class FileUploadController {
 				imageMain.setUuid(uuid);
 				imageMain.setMd5(md5Hex);
 				imageMain.setLocation(location);
+				
+				imageMain.setUrl(url);
 				imageMain.setSuffix(suffix);
 				imageMain.setValidStatus("1");
 				imageMain.setInsertTime(new Date());
