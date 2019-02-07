@@ -14,6 +14,80 @@
 - 提供图床功能
 - 支持根据条件检索图片（名称、分类、标签等）
 
+## 数据结构
+
+image_main
+id
+uuid
+md5
+location
+url
+insertTime
+updateTime
+
+image_ref
+id
+uuid
+md5
+displayName
+userCode
+category
+
+image_tag
+id
+uuid
+tagName
+validStatus
+
+image_user_tag
+id
+uuid
+md5
+userCode
+tagName
+
+## API
+
+### 异步上传图片
+
+### 给图片打标签
+
+入参
+
+|代码|参数名称|说明|
+|---|---|---|
+|uuid|图片uuid||
+|md5|图片md5||
+|userCode|用户代码||
+|tagName|标签名||
+
+请求类型 POST
+
+### 取消图片的标签
+
+入参
+
+|代码|参数名称|说明|
+|---|---|---|
+|uuid|图片uuid||
+|md5|图片md5||
+|userCode|用户代码||
+|tagName|标签名||
+
+请求类型 DELETE
+
+### 查询图片的标签
+
+入参
+
+|代码|参数名称|说明|
+|---|---|---|
+|uuid|图片uuid||
+|md5|图片md5||
+|userCode|用户代码||
+
+请求类型 GET
+
 ## 图片服务器
 
 目前使用的是nginx作为图片服务器
@@ -48,3 +122,42 @@
 架构设计v0.1版主要考虑存储和提供图片url，其他方面先不考虑，可以参考下图
 
 ![图片中心架构设计v0.1版](./docs/images/image-center-arch-design-v0.1.jpg)
+
+## 常见问题
+
+### 元素类型 "input" 必须由匹配的结束标记 "</input>" 终止。
+
+非严格的thymeleaf格式
+
+你可能会发现在默认配置下，thymeleaf对.html的内容要求很严格，比如<meta charset="UTF-8" />，如果少最后的标签封闭符号/，就会报错而转到错误页。也比如你在使用Vue.js这样的库，然后有<div v-cloak></div>这样的html代码，也会被thymeleaf认为不符合要求而抛出错误。
+
+因此，建议增加下面这段：
+
+```Java
+spring.thymeleaf.mode = LEGACYHTML5
+```
+
+spring.thymeleaf.mode的默认值是HTML5，其实是一个很严格的检查，改为LEGACYHTML5可以得到一个可能更友好亲切的格式要求。
+
+需要注意的是，LEGACYHTML5需要搭配一个额外的库NekoHTML才可用。到项目根目录的build.gradle文件里这样添加它到dependencies：
+
+```POM
+<dependency>
+    <groupId>net.sourceforge.nekohtml</groupId>
+    <artifactId>nekohtml</artifactId>
+    <version>1.9.22</version>
+</dependency>
+```
+
+参考自：
+
+- [Spring Boot简略入门手册](http://acgtofe.com/posts/2016/08/spring-boot-simple-start-guide)
+- [spring-boot-starter-thymeleaf对没有结束符的HTML5标签解析出错](https://www.cnblogs.com/mymelody/p/7903906.html)
+
+### easyui-tagbox插件不起作用
+
+easyui-tagbox扩展自$.fn.combobox.defaults，使用$.fn.tagbox.defaults重写默认值对象。（该组件自1.5.1版开始可用）
+
+需要升级easyui版本到1.5.1以上
+
+参考自 [EasyUI tagbox（标签框）](http://www.jeasyui.net/plugins/760.html)

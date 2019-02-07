@@ -3,14 +3,58 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-<title>Hello World!</title>
+<title>上传文件</title>
+<link type="text/css" href="./easyui/1.7.0/themes/default/easyui.css" rel="stylesheet"/>
+<link type="text/css" href="./easyui/1.7.0/themes/icon.css" rel="stylesheet"/>
+
 <script type="text/javascript" src="./jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="./easyui/1.7.0/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="./ajaxUpload.js"></script>
+
 </head>
 <body>
 	用户名<input id="userCode" type="text" name="userCode"/><br/>
 	图片分类<input id="category" type="text" name="category"/><br/>
 	<input id="cert" type="file" />&nbsp;&nbsp;重命名为&nbsp;&nbsp;<input id="fileNewName" type="text" name="fileNewName"/><br/>
 	<input type="button" value="上传" onclick="submit2();" />
+
+<div class="easyui-panel" title="上传文件" style="width:400px;height:auto;overflow:hidden">
+       <table style="width:98%;">
+           <tr>
+			<td>用户名</td>
+			<td>
+				<input id="userCode" name="userCode" class="easyui-textbox" style="width:98%"/>
+			</td>
+		</tr>
+           <tr>
+			<td>图片分类</td>
+			<td>
+				<input id="category" name="category" class="easyui-textbox" style="width:98%"/>
+			</td>
+		</tr>
+           <tr>
+               <td>文件</td>
+               <td>
+               	<input id="cert" class="easyui-filebox" name="file" data-options="prompt:'Choose a file...'" style="width:98%">
+               </td>
+           </tr>
+           <tr>
+               <td>重命名为</td>
+               <td>
+               	<input id="fileNewName" name="fileNewName" class="easyui-textbox" style="width:98%"/>
+               </td>
+           </tr>
+           <tr>
+               <td colspan="2">
+               		<input id="tags" class="easyui-tagbox" value="" label="添加标签" style="width:98%"/>
+			    </td>
+           </tr>
+           <tr>
+               <td colspan="2">
+               	<a href="#" class="easyui-linkbutton" onclick="submit2()" style="width:98%">上传</a>
+               </td>
+           </tr>
+       </table>
+</div>
 </body>
 </html>
