@@ -21,37 +21,33 @@
 <div class="easyui-panel" title="上传文件" style="width:400px;height:auto;overflow:hidden">
        <table style="width:98%;">
            <tr>
-			<td>用户名</td>
 			<td>
-				<input id="userCode" name="userCode" class="easyui-textbox" style="width:98%"/>
+				<input id="userCode" name="userCode" label="用户名" class="easyui-textbox" style="width:98%"/>
+			</td>
+		</tr>
+        <tr>
+			<td>
+				<input id="category" name="category" label="图片分类" class="easyui-textbox" style="width:98%"/>
 			</td>
 		</tr>
            <tr>
-			<td>图片分类</td>
-			<td>
-				<input id="category" name="category" class="easyui-textbox" style="width:98%"/>
-			</td>
-		</tr>
-           <tr>
-               <td>文件</td>
                <td>
-               	<input id="cert" class="easyui-filebox" name="file" data-options="prompt:'Choose a file...'" style="width:98%">
+               	<input id="cert" class="easyui-filebox" label="文件" name="file" data-options="prompt:'Choose a file...'" style="width:98%">
                </td>
            </tr>
            <tr>
-               <td>重命名为</td>
                <td>
-               	<input id="fileNewName" name="fileNewName" class="easyui-textbox" style="width:98%"/>
+               	<input id="fileNewName" name="fileNewName" class="easyui-textbox" label="重命名为" style="width:98%"/>
                </td>
            </tr>
            <tr>
-               <td colspan="2">
+               <td>
                		<input id="tags" class="easyui-tagbox" value="" label="添加标签" style="width:98%"/>
 			    </td>
            </tr>
            <tr>
-               <td colspan="2">
-               	<a href="#" class="easyui-linkbutton" onclick="submit2()" style="width:98%">上传</a>
+               <td>
+               	<a href="#" class="easyui-linkbutton" onclick="submit3()" style="width:98%">上传</a>
                </td>
            </tr>
        </table>
