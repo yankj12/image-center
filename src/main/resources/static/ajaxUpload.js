@@ -1,3 +1,18 @@
+/**
+ * 页面初始化后做些东西
+ */
+$(document).ready(function(){
+	console.log('init');
+	
+	// 清空原有数据
+	//$('#userCode_edit').textbox('setValue', '');  // 用户编码不需要清空
+	$('#category_edit').textbox('setValue', '');
+	$('#file_edit').filebox('setValue', '');
+	
+	$('#fileNewName_edit').textbox('setValue', '');
+	var tags = $('#tags_edit').tagbox('clear');
+	
+});
 	
 function submit(){
 	var userCode = $('#userCode_edit').textbox('getValue');
