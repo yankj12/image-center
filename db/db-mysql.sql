@@ -42,3 +42,20 @@ CREATE TABLE
 
 CREATE INDEX idx_image_ref_uuid ON image_ref (uuid);
 CREATE INDEX idx_image_ref_md5 ON image_ref (md5);
+
+
+-- 创建image_tag表
+CREATE TABLE
+    image_tag
+    (
+        id BIGINT NOT NULL AUTO_INCREMENT,
+        md5 VARCHAR(40) DEFAULT '',
+        tagName VARCHAR(40) DEFAULT '',
+		validStatus VARCHAR(2)DEFAULT '1',
+        insertTime DATETIME,
+        updateTime DATETIME,
+        PRIMARY KEY (id)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE INDEX idx_image_tag_md5 ON image_tag (md5);

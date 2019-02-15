@@ -62,7 +62,7 @@ public class ImageTagRestController {
 				md5 = refTmp.getMd5();
 			}
 			
-			List<ImageTag> imageTags = imageTagMapper.findImageTagByMD5(md5);
+			List<ImageTag> imageTags = imageTagMapper.findImageTagsByMD5(md5);
 			
 			response.setSuccess(true);
 			response.setResults(imageTags);
@@ -119,7 +119,6 @@ public class ImageTagRestController {
 			if(tagCount <= 0) {
 				ImageTag imageTag = new ImageTag();
 				imageTag.setMd5(md5);
-				imageTag.setUuid(uuid);
 				imageTag.setTagName(tagName);
 				imageTag.setValidStatus("1");
 				imageTag.setInsertTime(new Date());

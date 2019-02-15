@@ -14,13 +14,13 @@ public interface ImageTagMapper {
 	
 	void insertBatchImageTag(List<ImageTag> imageTags);
 	
-	List<ImageTag> findImageTagByUUID(String uuid);
-	
-	List<ImageTag> findImageTagByMD5(String md5);
+	List<ImageTag> findImageTagsByMD5(String md5);
 	
 	List<ImageTag> findImageTagsByCondition(Map<String, Object> condition);
 	
 	Long countImageTagsByCondition(Map<String, Object> condition);
 	
-	void updateValidStatusByUUID(ImageTag imageTag);
+	void deleteBatchImageTags(List<Long> ids);
+	
+	void deletImageTagByMd5(String md5);
 }

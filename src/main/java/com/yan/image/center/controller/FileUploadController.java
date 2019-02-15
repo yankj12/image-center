@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -21,8 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.yan.image.center.mapper.ImageMainMapper;
 import com.yan.image.center.mapper.ImageRefMapper;
+import com.yan.image.center.mapper.ImageTagMapper;
 import com.yan.image.center.schema.ImageMain;
 import com.yan.image.center.schema.ImageRef;
+import com.yan.image.center.schema.ImageTag;
 
 @Controller
 public class FileUploadController {
@@ -40,6 +43,9 @@ public class FileUploadController {
 	
 	@Autowired
 	private ImageRefMapper imageRefMapper;
+	
+	@Autowired
+	private ImageTagMapper imageTagMapper;
 	
 	// 访问路径为：http://127.0.0.1:8080/file
 	@RequestMapping("/file")
@@ -91,7 +97,7 @@ public class FileUploadController {
 	
 	@RequestMapping("/ajaxupload")
 	@ResponseBody
-	public String ajaxupload(@RequestParam("file") MultipartFile file, String userCode, String category, String fileNewName) {
+	public String ajaxupload(@RequestParam("file") MultipartFile file, String userCode, String category, String fileNewName, String tags) {
 		// uuid
 		String uuid = UUID.randomUUID().toString().replaceAll("-", "");
 		// 计算文件的md5值
@@ -133,6 +139,53 @@ public class FileUploadController {
 			imageRef.setInsertTime(new Date());
 			imageRef.setUpdateTime(new Date());
 			
+			// 处理标签tags
+			// 将页面传入的tag，根据英文逗号分割后转换为List
+			List<String> tagList = new ArrayList<String>();
+			if(tags != null && !"".equals(tags.trim())){
+				
+				String[] tagAry = tags.split(",");
+				
+				if(tagAry != null){
+					for(String tag:tagAry){
+						
+						if(tag != null && !"".equals(tag)){
+							tagList.add(tag);
+						}
+					}
+				}
+			}
+			
+			if(tagList != null && tagList.size() > 0){
+				
+				// 先删后插
+				
+				// 需要根据md5删除已有的tag
+				imageTagMapper.deletImageTagByMd5(md5Hex);
+				
+				// 新增tag
+				List<ImageTag> imageTagsToInsert = new ArrayList<ImageTag>();
+				
+				for(String tagName:tagList){
+					ImageTag imageTag = new ImageTag();
+					
+					imageTag.setMd5(md5Hex);
+					imageTag.setTagName(tagName);
+					imageTag.setValidStatus("1");
+					imageTag.setInsertTime(new Date());
+					imageTag.setUpdateTime(new Date());
+					
+					imageTagsToInsert.add(imageTag);
+				}
+				
+				if(imageTagsToInsert != null && imageTagsToInsert.size() > 0){
+					imageTagMapper.insertBatchImageTag(imageTagsToInsert);
+				}
+				
+			}else{
+				// 需要根据md5删除已有的tag
+				imageTagMapper.deletImageTagByMd5(md5Hex);
+			}
 			
 			// 根据md5值判断下文件是否已经在磁盘上
 			List<ImageMain> imageMainTemps =  imageMainMapper.findImageMainByMD5(md5Hex);

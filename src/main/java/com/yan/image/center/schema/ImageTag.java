@@ -9,8 +9,6 @@ public class ImageTag implements Serializable{
 
 	private Long id;
 	
-	private String uuid;
-	
 	private String md5;
 	
 	private String tagName;
@@ -27,14 +25,6 @@ public class ImageTag implements Serializable{
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
 	}
 
 	public String getMd5() {

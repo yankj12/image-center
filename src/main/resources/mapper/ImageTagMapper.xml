@@ -5,36 +5,29 @@
 
 	<insert id="insertImageTag" parameterType="com.yan.image.center.schema.ImageTag">
     	insert into image_tag 
-    	(uuid, md5, tagName, validStatus, insertTime, updateTime) 
+    	(md5, tagName, validStatus, insertTime, updateTime) 
     	values 
-    	(#{uuid}, #{md5}, #{tagName}, #{validStatus}, #{insertTime}, #{updateTime})
+    	(#{md5}, #{tagName}, #{validStatus}, #{insertTime}, #{updateTime})
     </insert>
     
     <insert id="insertBatchImageTag" parameterType="java.util.List">
     	insert into image_tag
-    	(uuid, md5, tagName, validStatus, insertTime, updateTime) 
+    	(md5, tagName, validStatus, insertTime, updateTime) 
     	values 
     	<foreach collection="list" item="item" index="index" separator=",">
-            (#{item.uuid}, #{item.md5}, #{item.tagName}, #{item.validStatus}, #{item.insertTime}, #{item.updateTime})
+            (#{item.md5}, #{item.tagName}, #{item.validStatus}, #{item.insertTime}, #{item.updateTime})
         </foreach>
     </insert>
-    
-    <select id="findImageTagByUUID" parameterType="String" resultType="com.yan.image.center.schema.ImageTag">
-        SELECT * FROM image_tag WHERE uuid = #{uuid}
-    </select>
-    
-    <select id="findImageTagByMD5" parameterType="String" resultType="com.yan.image.center.schema.ImageTag">
+
+    <select id="findImageTagsByMD5" parameterType="String" resultType="com.yan.image.center.schema.ImageTag">
         SELECT * FROM image_tag WHERE md5 = #{md5}
     </select>
     
 	<select id="countImageTagsByCondition" parameterType="String" resultType="long">
         SELECT count(*) FROM image_tag
         <trim prefix="where" prefixOverrides="and|or"> 
-    		<if test="uuid != null and uuid != ''">
-    			uuid=#{uuid}
-    		</if>
     		<if test="md5 != null and md5 != ''">
-    			and md5=#{md5}
+    			md5=#{md5}
     		</if>
     		<if test="tagName != null and tagName != ''">
     			and tagName=#{tagName}
@@ -49,11 +42,8 @@
     <select id="findImageTagsByCondition" parameterType="java.util.Map"  resultType="com.yan.image.center.schema.ImageTag">
     	select * from image_tag
     	<trim prefix="where" prefixOverrides="and|or"> 
-    		<if test="uuid != null and uuid != ''">
-    			uuid=#{uuid}
-    		</if>
     		<if test="md5 != null and md5 != ''">
-    			and md5=#{md5}
+    			md5=#{md5}
     		</if>
     		<if test="tagName != null and tagName != ''">
     			and tagName=#{tagName}
@@ -67,8 +57,14 @@
     	limit #{offset},#{pageSize}
     </select>
     
-    <update id="updateValidStatusByUUID" parameterType="com.yan.image.center.schema.ImageTag">
-    	update image_tag set validStatus=#{validStatus}, updateTime=#{updateTime}
-    	where uuid=#{uuid}
-    </update>
+	<delete id="deleteBatchImageTags" parameterType="java.util.List">  
+		delete from image_tag where id in 
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+    
+    <delete id="deletImageTagByMd5" parameterType="String">  
+		delete from image_tag where md5=#{md5}
+	</delete>
 </mapper>
