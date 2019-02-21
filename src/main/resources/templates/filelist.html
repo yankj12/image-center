@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>文件列表</title>
+<link type="text/css" href="./easyui/1.7.0/themes/default/easyui.css" rel="stylesheet"/>
+<link type="text/css" href="./easyui/1.7.0/themes/icon.css" rel="stylesheet"/>
+
+<script type="text/javascript" src="./jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="./easyui/1.7.0/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="./ajaxUpload.js"></script>
+
+</head>
+<body>
+
+<table id="dg" title="查询结果" class="easyui-datagrid" style="width:100%;height:auto;"
+		url="/imagesdatagrid?validStatus=1"
+		toolbar="#toolbar"
+		rownumbers="true" pagination="true" fitColumns="true">
+		<!-- table增加了pagination="true"属性，就增加了底部的分页工具栏 -->
+	<thead>
+		<tr>
+			<!-- field必须不能重复，否则页面展示上比例调整起来很没有规律 -->
+			<th data-options="field:'uuid',hidden:true">refuuid</th>
+			<th data-options="field:'md5',hidden:true">md5</th>
+			<th field="displayName" width="20">名称</th>
+			<th field="userCode" width="20">上传者</th>
+			<th field="category" width="5">类别</th>
+		</tr>
+	</thead>
+</table>
+<div id="toolbar">
+	<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newRecord('上传图片')">上传图片</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editRecord('修改图片信息')">修改图片信息</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyRecord()">删除图片</a>
+	
+</div>
+
+</body>
+</html>

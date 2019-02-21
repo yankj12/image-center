@@ -59,6 +59,11 @@ public class FileUploadController {
 		return "/ajaxfile";
 	}
 	
+	@RequestMapping("/filelist")
+	public String filelist() {
+		return "/filelist";
+	}
+	
 	/**
 	 * 文件上传具体实现方法;
 	 * 
