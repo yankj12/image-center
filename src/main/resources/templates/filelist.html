@@ -9,7 +9,7 @@
 
 <script type="text/javascript" src="./jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="./easyui/1.7.0/jquery.easyui.min.js"></script>
-<script type="text/javascript" src="./ajaxUpload.js"></script>
+<script type="text/javascript" src="./listfile.js"></script>
 
 </head>
 <body>
@@ -36,6 +36,46 @@
 	<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyRecord()">删除图片</a>
 	
 </div>
+
+	<div id="dlg" class="easyui-dialog" style="width:400px;height:auto;padding:0px 0px"
+			closed="true">
+		<div title="上传图片" style="padding:5px">
+			<form id="fm" method="post" novalidate>
+				<table style="width:98%;">
+					<tr>
+						<td>
+							<input id="userCode_edit" name="userCode" label="用户名" class="easyui-textbox" style="width:98%"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input id="category_edit" name="category" label="图片分类" class="easyui-textbox" style="width:98%"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input id="file_edit" class="easyui-filebox" label="文件" name="file"  data-options="buttonText:'选择',prompt:'请选择文件...'" style="width:98%">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input id="fileNewName_edit" name="fileNewName" class="easyui-textbox" label="重命名为" style="width:98%"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input id="tags_edit" class="easyui-tagbox" value="" label="添加标签" style="width:98%"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="#" class="easyui-linkbutton" onclick="uploadFile()" style="width:98%">上传</a>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
 
 </body>
 </html>
