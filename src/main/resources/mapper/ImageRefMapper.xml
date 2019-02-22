@@ -77,4 +77,9 @@
     	update image_ref set validStatus=#{validStatus}, updateTime=#{updateTime}
     	where uuid=#{uuid}
     </update>
+    
+    <update id="updateImageInfoByUUID" parameterType="com.yan.image.center.schema.ImageRef">
+    	update image_ref set displayName=#{displayName}, suffix=#{suffix}, userCode=#{userCode}, category=#{category}, updateTime=#{updateTime}
+    	where uuid=#{uuid}
+    </update>
 </mapper>

@@ -23,4 +23,6 @@ public interface ImageRefMapper {
 	Long countImageRefsByCondition(Map<String, Object> condition);
 	
 	void updateValidStatusByUUID(ImageRef imageRef);
+	
+	void updateImageInfoByUUID(ImageRef imageRef);
 }

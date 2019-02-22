@@ -31,15 +31,20 @@ function editRecord(title){
 		var suffix = row.suffix;
 		var filename = displayName + "." + suffix;
 		var category = row.category;
+		var userCode = row.userCode;
 		
 		$('#dlg1').dialog('open').dialog('setTitle', title);
 		$('#fm1').form('clear');
 		
+		$('#userCode_edit_1').textbox('setValue', userCode);
 		$('#category_edit_1').textbox('setValue', category);
 		$('#file_edit_1').textbox('setValue', filename);
 //		$('#fileNewName_edit_1').textbox('getValue');
 //		$('#tags_edit_1').textbox('getValue');
 		
+		// 将uuid和md5写入隐藏域
+		$("#refuuid_edit_1").val(refuuid);
+		$("#md5_edit_1").val(md5);
 		
 	}else{
 		//alert("请选择一条记录进行修改");
@@ -104,6 +109,53 @@ function uploadFile(){
 	}); 
 }
 
+function editFileInfo(){
+	
+	var refuuid = $("#refuuid_edit_1").val();
+	var md5 = $("#md5_edit_1").val();
+	
+	var userCode = $('#userCode_edit_1').textbox('getValue');
+	var category = $('#category_edit_1').textbox('getValue');
+	
+	var fileNewName = $('#fileNewName_edit_1').textbox('getValue');
+	console.log(fileNewName);
+	
+	var tags = $('#tags_edit_1').tagbox('getValues');
+	console.log(tags);
+	
+	var tagstr = '';
+	if(tags != null){
+		for(var i=0;i<tags.length;i++){
+			
+			if(i == 0){
+				tagstr = tagstr + tags[i];
+			}else{
+				tagstr = tagstr + "," + tags[i];
+			}
+		}
+	}
+	
+	$.ajax({
+        type:"POST", 
+        url:"/editfile?refuuid=" + refuuid + "&userCode=" + userCode + '&category=' + category + "&fileNewName=" + fileNewName + "&tags=" + tagstr,
+        //url:"leave/saveLeaveApplication?editType=新增",
+        dataType:"json", 
+        //data:postData,
+        contentType: "text/html;charset=UTF-8", 
+        success:function(result){
+        	if (result.success){
+				
+        		$.messager.alert('提示',result.errorMsg);
+        	}else{
+        		$.messager.alert('提示',result.errorMsg);
+        	}
+        },
+       	failure:function (result) {  
+       		//(提示框标题，提示信息)
+    		$.messager.alert('提示','加载失败');
+       	}
+	});
+}
 
 function formatFileName(val,row){
 	return row.displayName + "." + row.suffix;
