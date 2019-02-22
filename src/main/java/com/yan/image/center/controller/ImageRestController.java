@@ -228,4 +228,32 @@ public class ImageRestController {
 		return responseVo;
 	}
 	
+	@RequestMapping("/deletefile")
+	@ResponseBody
+	public ResponseVo delete(@RequestParam(value="refuuid",required=false)String refuuid) {
+		ResponseVo responseVo = new ResponseVo();
+		
+		// 根据refuuid查下image_ref表是否有记录
+		// 采用逻辑删除的方式，根据refuuid，更新image_ref表的validstatus字段为0
+		
+		List<ImageRef> imageRefs = imageRefMapper.findImageRefByUUID(refuuid);
+		
+		if(imageRefs != null && imageRefs.size() == 1){
+			ImageRef imageRef = imageRefs.get(0);
+			
+			imageRef.setValidStatus("0");
+			imageRef.setUpdateTime(new Date());
+			
+			imageRefMapper.updateValidStatusByUUID(imageRef);
+			responseVo.setSuccess(true);
+			responseVo.setErrorMsg("删除图片成功");
+			
+		}else{
+			// 找不到对应文件
+			responseVo.setSuccess(false);
+			responseVo.setErrorMsg(refuuid + "找不到对应文件");
+		}
+		
+		return responseVo;
+	}
 }

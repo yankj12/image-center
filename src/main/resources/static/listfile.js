@@ -53,6 +53,34 @@ function editRecord(title){
 	}
 }
 
+
+function destroyRecord(){
+	var rows = $('#dg').datagrid('getSelections');
+	if (rows != null && rows.length != null && rows.length > 1){
+		$.messager.alert('提示','不允许选择多条记录进行修改');
+		return false;
+	}
+	
+	var row = $('#dg').datagrid('getSelected');
+	if (row){
+		$.messager.confirm('Confirm','确定删除这条记录吗？',function(r){
+			if (r){
+				var refuuid = row.uuid;
+				$.post('/deletefile?refuuid=' + refuuid, {},function(result){
+					if (result.success){
+						$('#dg').datagrid('reload');	// reload the user data
+					} else {
+						$.messager.show({	// show error message
+							title: 'Error',
+							msg: result.errorMsg
+						});
+					}
+				},'json');
+			}
+		});
+	}
+}
+
 function uploadFile(){
 	var userCode = $('#userCode_edit').textbox('getValue');
 	var category = $('#category_edit').textbox('getValue');
