@@ -13,6 +13,8 @@ public class ImageVo implements Serializable{
 	
 	private String displayName;
 	
+	private String suffix;
+	
 	private String userCode;
 	
 	private String category;
@@ -105,6 +107,14 @@ public class ImageVo implements Serializable{
 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public String getSuffix() {
+		return suffix;
+	}
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
 	}
 	
 }

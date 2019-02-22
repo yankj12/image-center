@@ -5,17 +5,17 @@
 
 	<insert id="insertImageRef" parameterType="com.yan.image.center.schema.ImageRef">
     	insert into image_ref 
-    	(uuid, md5, displayName, userCode, category, validStatus, insertTime, updateTime) 
+    	(uuid, md5, displayName, suffix, userCode, category, validStatus, insertTime, updateTime) 
     	values 
-    	(#{uuid}, #{md5}, #{displayName}, #{userCode}, #{category}, #{validStatus}, #{insertTime}, #{updateTime})
+    	(#{uuid}, #{md5}, #{displayName}, #{suffix}, #{userCode}, #{category}, #{validStatus}, #{insertTime}, #{updateTime})
     </insert>
     
     <insert id="insertBatchImageRef" parameterType="java.util.List">
     	insert into image_ref
-    	(uuid, md5, displayName, userCode, category, validStatus, insertTime, updateTime) 
+    	(uuid, md5, displayName, suffix, userCode, category, validStatus, insertTime, updateTime) 
     	values 
     	<foreach collection="list" item="item" index="index" separator=",">
-            (#{item.uuid}, #{item.md5}, #{item.displayName}, #{item.userCode}, #{item.category}, #{item.validStatus}, #{item.insertTime}, #{item.updateTime})
+            (#{item.uuid}, #{item.md5}, #{item.displayName}, #{item.suffix}, #{item.userCode}, #{item.category}, #{item.validStatus}, #{item.insertTime}, #{item.updateTime})
         </foreach>
     </insert>
     

@@ -18,6 +18,36 @@ function newRecord(title){
 }
 
 
+function editRecord(title){
+	
+	var row = $('#dg').datagrid('getSelected');    //这一步可以改造为从后台异步获取数据
+	
+	if(row != null){
+		var id = row.id;
+		
+		var refuuid = row.uuid;
+		var md5 = row.md5;
+		var displayName = row.displayName;
+		var suffix = row.suffix;
+		var filename = displayName + "." + suffix;
+		var category = row.category;
+		
+		$('#dlg1').dialog('open').dialog('setTitle', title);
+		$('#fm1').form('clear');
+		
+		$('#category_edit_1').textbox('setValue', category);
+		$('#file_edit_1').textbox('setValue', filename);
+//		$('#fileNewName_edit_1').textbox('getValue');
+//		$('#tags_edit_1').textbox('getValue');
+		
+		
+	}else{
+		//alert("请选择一条记录进行修改");
+		//(提示框标题，提示信息)
+		$.messager.alert('提示','请选择一条记录进行修改');
+	}
+}
+
 function uploadFile(){
 	var userCode = $('#userCode_edit').textbox('getValue');
 	var category = $('#category_edit').textbox('getValue');
@@ -72,4 +102,9 @@ function uploadFile(){
 			alert(result);
 		}
 	}); 
+}
+
+
+function formatFileName(val,row){
+	return row.displayName + "." + row.suffix;
 }

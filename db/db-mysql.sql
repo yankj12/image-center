@@ -59,3 +59,5 @@ CREATE TABLE
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE INDEX idx_image_tag_md5 ON image_tag (md5);
+
+alter table image_ref add suffix VARCHAR(6) DEFAULT '' after displayName;

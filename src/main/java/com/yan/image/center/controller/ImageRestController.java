@@ -103,6 +103,7 @@ public class ImageRestController {
 			imageVo.setUuid(refuuid);
 			imageVo.setMd5(md5);
 			imageVo.setDisplayName(imageRef.getDisplayName());
+			imageVo.setSuffix(imageRef.getSuffix());
 			imageVo.setUserCode(imageRef.getUserCode());
 			imageVo.setCategory(imageRef.getCategory());
 			imageVo.setUrl(url);

@@ -24,7 +24,9 @@
 			<!-- field必须不能重复，否则页面展示上比例调整起来很没有规律 -->
 			<th data-options="field:'uuid',hidden:true">refuuid</th>
 			<th data-options="field:'md5',hidden:true">md5</th>
-			<th field="displayName" width="20">名称</th>
+			<th data-options="field:'displayName',hidden:true">文件名</th>
+			<th data-options="field:'suffix',hidden:true">后缀名</th>
+			<th field="filename" width="20" formatter="formatFileName">名称</th>
 			<th field="userCode" width="20">上传者</th>
 			<th field="category" width="5">类别</th>
 		</tr>
@@ -69,7 +71,7 @@
 					</tr>
 					<tr>
 						<td>
-							<a href="#" class="easyui-linkbutton" onclick="uploadFile()" style="width:98%">上传</a>
+							<a href="#" class="easyui-linkbutton" onclick="uploadFile()" style="width:98%">确定</a>
 						</td>
 					</tr>
 				</table>
@@ -77,5 +79,44 @@
 		</div>
 	</div>
 
+	<div id="dlg1" class="easyui-dialog" style="width:400px;height:auto;padding:0px 0px"
+			closed="true">
+		<div title="修改图片信息" style="padding:5px">
+			<form id="fm1" method="post" novalidate>
+				<table style="width:98%;">
+					<tr>
+						<td>
+							<input id="userCode_edit_1" name="userCode" label="用户名" class="easyui-textbox" style="width:98%"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input id="category_edit_1" name="category" label="图片分类" class="easyui-textbox" style="width:98%"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input id="file_edit_1" name="file" label="文件" class="easyui-textbox" style="width:98%"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input id="fileNewName_edit_1" name="fileNewName" class="easyui-textbox" label="重命名为" style="width:98%"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input id="tags_edit_1" class="easyui-tagbox" value="" label="添加标签" style="width:98%"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="#" class="easyui-linkbutton" onclick="editFileInfo()" style="width:98%">确定</a>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
 </body>
 </html>

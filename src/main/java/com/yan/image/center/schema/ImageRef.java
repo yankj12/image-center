@@ -15,6 +15,8 @@ public class ImageRef implements Serializable{
 	
 	private String displayName;
 	
+	private String suffix;
+	
 	private String userCode;
 	
 	private String category;
@@ -95,6 +97,14 @@ public class ImageRef implements Serializable{
 
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	public String getSuffix() {
+		return suffix;
+	}
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
 	}
 	
 }
