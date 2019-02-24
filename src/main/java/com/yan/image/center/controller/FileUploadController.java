@@ -134,9 +134,19 @@ public class FileUploadController {
 			
 			// 如果前台传入了文件重命名参数，那么文件展示名称设置为重命名后的文件名称，否则展示原文件名
 			if(fileNewName != null && !"".equals(fileNewName.trim())) {
-				imageRef.setDisplayName(fileNewName);
+				// suffix
+				String fileNewNameSuffix = fileNewName.substring(fileNewName.lastIndexOf(".") + 1);
+				// 后缀名都转为小写存储
+				fileNewNameSuffix = fileNewNameSuffix.toLowerCase();
+				
+				// 不带后缀名得文件名称
+				String fileNewNameWithoutSuffix = fileNewName.substring(0, fileNewName.lastIndexOf("."));
+				
+				imageRef.setDisplayName(fileNewNameWithoutSuffix);
+				imageRef.setSuffix(fileNewNameSuffix);
 			}else {
 				imageRef.setDisplayName(fileNameWithoutSuffix);
+				imageRef.setSuffix(suffix);
 			}
 			imageRef.setCategory(category);
 			imageRef.setUserCode(userCode);
