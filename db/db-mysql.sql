@@ -31,6 +31,7 @@ CREATE TABLE
         uuid VARCHAR(32) DEFAULT '',
         md5 VARCHAR(40) DEFAULT '',
         displayName VARCHAR(255) DEFAULT '',
+        suffix VARCHAR(6) DEFAULT '',
         userCode VARCHAR(20) DEFAULT '',
         category VARCHAR(20) DEFAULT '',
 		validStatus VARCHAR(2)DEFAULT '1',
