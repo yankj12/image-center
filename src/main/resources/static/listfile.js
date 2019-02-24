@@ -1,3 +1,4 @@
+var contextRootPath = '/imagecenter';
 
 function newRecord(title){
 	//打开新的标签，在新的标签中进行添加操作
@@ -75,7 +76,7 @@ function destroyRecord(){
 		$.messager.confirm('Confirm','确定删除这条记录吗？',function(r){
 			if (r){
 				var refuuid = row.uuid;
-				$.post('/deletefile?refuuid=' + refuuid, {},function(result){
+				$.post(contextRootPath + '/deletefile?refuuid=' + refuuid, {},function(result){
 					if (result.success){
 						$('#dg').datagrid('reload');	// reload the user data
 					} else {
@@ -147,7 +148,7 @@ function uploadFile(){
 	
 	$.ajax({ 
 		type: "POST", //因为是传输文件，所以必须是post 
-		url: '/ajaxupload?userCode=' + userCode + '&category=' + category + "&fileNewName=" + fileNewName + "&tags=" + tagstr, //对应的后台处理类的地址 
+		url: contextRootPath + '/ajaxupload?userCode=' + userCode + '&category=' + category + "&fileNewName=" + fileNewName + "&tags=" + tagstr, //对应的后台处理类的地址 
 		data: formData, 
 		processData: false, 
 		contentType: false, 
@@ -195,7 +196,7 @@ function editFileInfo(){
 	
 	$.ajax({
         type:"POST", 
-        url:"/editfile?refuuid=" + refuuid + "&userCode=" + userCode + '&category=' + category + "&fileNewName=" + fileNewName + "&tags=" + tagstr,
+        url: contextRootPath + "/editfile?refuuid=" + refuuid + "&userCode=" + userCode + '&category=' + category + "&fileNewName=" + fileNewName + "&tags=" + tagstr,
         //url:"leave/saveLeaveApplication?editType=新增",
         dataType:"json", 
         //data:postData,

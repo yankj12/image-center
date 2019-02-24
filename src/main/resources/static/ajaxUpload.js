@@ -1,3 +1,5 @@
+var contextRootPath = '/imagecenter';
+
 /**
  * 页面初始化后做些东西
  */
@@ -59,7 +61,7 @@ function submit(){
 	
 	$.ajax({ 
 		type: "POST", //因为是传输文件，所以必须是post 
-		url: '/ajaxupload?userCode=' + userCode + '&category=' + category + "&fileNewName=" + fileNewName + "&tags=" + tagstr, //对应的后台处理类的地址 
+		url: contextRootPath + '/ajaxupload?userCode=' + userCode + '&category=' + category + "&fileNewName=" + fileNewName + "&tags=" + tagstr, //对应的后台处理类的地址 
 		data: formData, 
 		processData: false, 
 		contentType: false, 
