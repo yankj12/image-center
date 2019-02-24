@@ -40,10 +40,12 @@ function submit(){
 	var fileList = $("input[type='file'].textbox-value")[0].files;
 	
 	if(fileList == null || fileList.length == 0){
-		alert('请选择文件！');
+		$.messager.alert("操作提示", '请选择文件！', "info");
+		return ;
 	}else{
 		if(fileList.length > 1){
-			alert('暂不支持一次上传多个文件！');
+			$.messager.alert("操作提示", '暂不支持一次上传多个文件！', "info");
+			return ;
 		}
 	}
 	
@@ -62,10 +64,15 @@ function submit(){
 		processData: false, 
 		contentType: false, 
 		success: function (result) { 
-			alert(result); 
+			$.messager.alert("操作提示", result, "info", function () {
+	        	// 关闭弹窗
+	        	$('#dlg').dialog('close');
+	        	// datagrid重新加载数据
+	        	$('#dg').datagrid('reload');	// reload the user data
+	        });
 		},
 		failure:function (result) {  
-			alert(result);
+			$.messager.alert("操作提示", result, "error");
 		}
 	}); 
 }
