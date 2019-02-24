@@ -8,8 +8,17 @@ function newRecord(title){
 //	//设置修改类型，否则action中保存方法不知道是什么修改类型
 //	$('#editType_edit').val("new");
 
+	// 先判断隐藏域中是否有userCode，如果没有从cookie中取值
+	var userCode = $('#userCode_hidden').val();
+	
+	if(userCode == null || userCode == ''){
+		var userId = $.cookie('userId');
+		if(userId != null && userId != ''){
+			userCode = userId;
+		}
+	}
 	// 清空原有数据
-	//$('#userCode_edit').textbox('setValue', '');  // 用户编码不需要清空
+	$('#userCode_edit').textbox('setValue', userCode);  // 用户编码不需要清空
 	$('#category_edit').textbox('setValue', '');
 	$('#file_edit').filebox('setValue', '');
 	
@@ -124,6 +133,18 @@ function uploadFile(){
 	var formData = new FormData(); 
 	formData.append(type, targetFile); //生成一对表单属性 
 
+	// 页面隐藏域中填写上最近一次上传文件的userCode
+	if(userCode != null && userCode != ''){
+		$('#userCode_hidden').val(userCode);
+		
+		// 如果cookie中没有userCode，填写上
+		var userId = $.cookie('userId');
+		if(userId == null || userId == ''){
+			$.cookie('userId', userCode, { expires: 7, path: '/' });
+		}
+	}
+	
+	
 	$.ajax({ 
 		type: "POST", //因为是传输文件，所以必须是post 
 		url: '/ajaxupload?userCode=' + userCode + '&category=' + category + "&fileNewName=" + fileNewName + "&tags=" + tagstr, //对应的后台处理类的地址 

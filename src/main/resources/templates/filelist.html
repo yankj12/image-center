@@ -8,6 +8,9 @@
 <link type="text/css" href="./easyui/1.7.0/themes/icon.css" rel="stylesheet"/>
 
 <script type="text/javascript" src="./jquery/3.3.1/jquery.min.js"></script>
+<!-- 引入jquery-cookie -->
+<script src="./jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
 <script type="text/javascript" src="./easyui/1.7.0/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="./listfile.js"></script>
 
@@ -39,6 +42,8 @@
 	
 </div>
 
+	<input type="hidden" id="userCode_hidden" name="userCode"/>
+	
 	<div id="dlg" class="easyui-dialog" style="width:400px;height:auto;padding:0px 0px"
 			closed="true">
 		<div title="上传图片" style="padding:5px">
@@ -83,7 +88,7 @@
 			closed="true">
 		<div title="修改图片信息" style="padding:5px">
 			<form id="fm1" method="post" novalidate>
-				<input type="hidden" id="refuuid_edit_1" name="refuuid""/>
+				<input type="hidden" id="refuuid_edit_1" name="refuuid"/>
 				<input type="hidden" id="md5_edit_1" name="md5"/>
 				
 				<table style="width:98%;">
