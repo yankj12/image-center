@@ -161,3 +161,71 @@ easyui-tagbox扩展自$.fn.combobox.defaults，使用$.fn.tagbox.defaults重写�
 需要升级easyui版本到1.5.1以上
 
 参考自 [EasyUI tagbox（标签框）](http://www.jeasyui.net/plugins/760.html)
+
+### 文件太大上传不上去
+
+#### SpringBoot对上传文件大小的限制
+
+SpringBoot版本1.5.9
+
+```properties
+# 单个文件最大大小
+spring.http.multipart.maxFileSize=30Mb
+# 单次请求最大大小
+spring.http.multipart.maxRequestSize=100Mb
+```
+
+根据不同版本，对应的设置值不一样
+
+```properties
+# Spring Boot 1.3.x and earlier
+multipart.maxFileSize
+multipart.maxRequestSize
+
+# Spring Boot 1.4.x and 1.5.x
+spring.http.multipart.maxFileSize
+spring.http.multipart.maxRequestSize
+
+# Spring Boot 2.x
+spring.servlet.multipart.maxFileSize
+spring.servlet.multipart.maxRequestSize
+```
+
+比如在2.x的版本，则在项目的application.properties文件中设置30MB大小
+
+```properties
+spring.servlet.multipart.maxFileSize=30MB
+spring.servlet.multipart.maxRequestSize=30MB
+
+# 如果不限制大小，则设置为-1即可
+spring.servlet.multipart.maxFileSize=-1
+spring.servlet.multipart.maxRequestSize=-1
+```
+
+参考自 [SpringBoot 文件上传、下载、设置大小](https://www.cnblogs.com/chevin/p/9260842.html)
+
+#### nginx对上传文件大小的限制
+
+自己搭的服务器，用nginx做代理。上传超过1M大的客户端文件无法正常上传，nginx直接报错，上传文件太大，于是修改了下nginx的配置，就可以了。
+按照网上所说的加上`client_max_body_size`字段，怎么重启nginx都不行。后来发现放的位置有问题！
+
+```nginx.conf
+server {
+    listen       80;
+    server_name  localhost;
+    client_max_body_size 10M;
+
+    location /web {
+        alias   D:/web;
+        index main.html;            
+    }
+    location /web/service {
+        proxy_pass   http://192.168.1.188:8080/service;     
+    }
+    location /web/service/upload {
+        proxy_pass   http://192.168.1.188/upload;
+    }       
+}
+```
+
+参考自 [nginx对上传文件大小的限制](https://blog.csdn.net/longzhoufeng/article/details/79737549)
