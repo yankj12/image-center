@@ -50,18 +50,18 @@ public class FileUploadController {
 	// 访问路径为：http://127.0.0.1:8080/file
 	@RequestMapping("/file")
 	public String file() {
-		return "/file";
+		return "file";
 	}
 
 	// 访问路径为：http://127.0.0.1:8080/file
 	@RequestMapping("/ajaxfile")
 	public String ajaxfile() {
-		return "/ajaxfile";
+		return "ajaxfile";
 	}
 	
 	@RequestMapping("/filelist")
 	public String filelist() {
-		return "/filelist";
+		return "filelist";
 	}
 	
 	/**
