@@ -261,19 +261,59 @@ function newRecordMulti(title){
 	$('#dlg2').dialog('open').dialog('setTitle', title);
 }
 
+/**
+ * 动态添加一行
+ * 
+ * @param containerId
+ * @returns
+ */
 function appendRow(containerId){
 
+	// 最大上传文件数限制
+	var maxFileLimit = 10;
+	
+	// 最多同时上传10个文件
+	var trs = $("#" + containerId).children("tr");
+	//console.log(trs.length);
+	
+	if(trs.length >= maxFileLimit){
+		$.messager.alert('提示', '最多同时上传' + maxFileLimit + '个文件');
+		return ;
+	}
+	
+	// 生成6位随机字符串作为id的后缀
 	var rId = randomId(6);
 	
 	var htmlstr = '<tr id="' + rId + '" width="100%">'
 	+ '<td width="50%"><input id="file_edit_' + rId + '" name="file" label="文件" class="easyui-filebox" style="width:98%"/></td>'
 	+ '<td width="45%"><input id="fileNewName_edit_' + rId + '" name="fileNewName" class="easyui-textbox" label="重命名为" style="width:98%"/></td>'
-	+ '<td width="5%"><a href="#" class="easyui-linkbutton" data-options="iconCls:\'icon-remove\'" onclick="alert(\'' + rId + '\')"></a></td>'
+	+ '<td width="5%"><a href="#" class="easyui-linkbutton" data-options="iconCls:\'icon-remove\'" onclick="removeRow(\'' + rId + '\')"></a></td>'
 	+ '</tr>';
 	
 	var targetObj = $(htmlstr).appendTo("#" + containerId);
 	
+	// 渲染作为字符串添加到dom中的组件
 	$.parser.parse(targetObj);
+}
+
+/**
+ * 删除某一行数据
+ * @param rowId
+ * @returns
+ */
+function removeRow(rowId){
+	//console.log("remove row, rowId:" + rowId);
+	
+	$("#" + rowId).detach();
+	
+//	detach() 方法移除被选元素，包括所有文本和子节点。
+//	这个方法会保留 jQuery 对象中的匹配的元素，因而可以在将来再使用这些匹配的元素。
+//	detach() 会保留所有绑定的事件、附加的数据，这一点与 remove() 不同。
+	
+//	remove() 方法移除被选元素，包括所有文本和子节点。
+//	该方法不会把匹配的元素从 jQuery 对象中删除，因而可以在将来再使用这些匹配的元素。
+//	但除了这个元素本身得以保留之外，remove() 不会保留元素的 jQuery 数据。其他的比如绑定的事件、附加的数据等都会被移除。这一点与 detach() 不同。
+	
 }
 
 /**
@@ -290,6 +330,10 @@ function randomId(length){
     return randomId;
 }
 
+/**
+ * 生成uuid
+ * @returns
+ */
 function uuid() {
     var s = [];
     var hexDigits = "0123456789abcdef";
