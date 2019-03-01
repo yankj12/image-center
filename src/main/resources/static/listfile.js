@@ -219,3 +219,87 @@ function editFileInfo(){
 function formatFileName(val,row){
 	return row.displayName + "." + row.suffix;
 }
+
+function newRecordMulti(title){
+	//打开新的标签，在新的标签中进行添加操作
+	//addTab(title,'leave/editLeaveApplication?editType=new');
+	
+//	$('#dlg2').dialog('open').dialog('setTitle', title);
+		
+	$('#fm2').form('clear');
+//	//设置修改类型，否则action中保存方法不知道是什么修改类型
+//	$('#editType_edit').val("new");
+
+	// 先判断隐藏域中是否有userCode，如果没有从cookie中取值
+	var userCode = $('#userCode_hidden').val();
+	
+	if(userCode == null || userCode == ''){
+		var userId = $.cookie('userId');
+		if(userId != null && userId != ''){
+			userCode = userId;
+		}
+	}
+	// 清空原有数据
+	$('#userCode_edit_2').textbox('setValue', userCode);  // 用户编码不需要清空
+	$('#category_edit_2').textbox('setValue', '');
+	$('#file_edit_2').filebox('setValue', '');
+	
+	$('#fileNewName_edit_2').textbox('setValue', '');
+	var tags = $('#tags_edit_2').tagbox('clear');
+	
+	var targetObj = $("#row_data").html("");
+	
+	//$.parser.parse(targetObj);
+	
+//	$('#dlg2').dialog({
+//		title: title,	
+//		width:400,
+//		height:200,
+//		resizable: true
+//	}).dialog('open');
+	
+	$('#dlg2').dialog('open').dialog('setTitle', title);
+}
+
+function appendRow(containerId){
+
+	var rId = randomId(6);
+	
+	var htmlstr = '<tr id="' + rId + '" width="100%">'
+	+ '<td width="50%"><input id="file_edit_' + rId + '" name="file" label="文件" class="easyui-filebox" style="width:98%"/></td>'
+	+ '<td width="45%"><input id="fileNewName_edit_' + rId + '" name="fileNewName" class="easyui-textbox" label="重命名为" style="width:98%"/></td>'
+	+ '<td width="5%"><a href="#" class="easyui-linkbutton" data-options="iconCls:\'icon-remove\'" onclick="alert(\'' + rId + '\')"></a></td>'
+	+ '</tr>';
+	
+	var targetObj = $(htmlstr).appendTo("#" + containerId);
+	
+	$.parser.parse(targetObj);
+}
+
+/**
+ * 生成长度为length的随机Id
+ */
+function randomId(length){
+	var s = [];
+    var hexDigits = "0123456789abcdef";
+    for (var i = 0; i < length; i++) {
+        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+    }
+    
+    var randomId = s.join("");
+    return randomId;
+}
+
+function uuid() {
+    var s = [];
+    var hexDigits = "0123456789abcdef";
+    for (var i = 0; i < 36; i++) {
+        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+    }
+    s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+    s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+    s[8] = s[13] = s[18] = s[23] = "-";
+ 
+    var uuid = s.join("");
+    return uuid;
+}
