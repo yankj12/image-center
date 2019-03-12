@@ -168,6 +168,112 @@ function uploadFile(){
 	}); 
 }
 
+function uploadMultiFile(){
+	var containerId = 'row_data';
+	
+	var userCode = $('#userCode_edit_2').textbox('getValue');
+	var category = $('#category_edit_2').textbox('getValue');
+	
+	// 标签
+	var tags = $('#tags_edit_2').tagbox('getValues');
+	console.log(tags);
+	
+	var tagstr = '';
+	if(tags != null){
+		for(var i=0;i<tags.length;i++){
+			
+			if(i == 0){
+				tagstr = tagstr + tags[i];
+			}else{
+				tagstr = tagstr + "," + tags[i];
+			}
+		}
+	}
+
+	// 文件重命名数组
+	var fileNewNames = '';
+	var trs = $("#" + containerId).children("tr");
+	if(trs != null && trs.length > 0){
+		for(var i=0;i<trs.length;i++){
+			var rId = trs[i].id;
+			console.log(rId);
+			
+			var fileNewName = $("#multiFileNewName_edit_" + rId).textbox('getValue');
+			console.log(fileNewName);
+			
+			if(fileNewName == null){
+				fileNewName = "";
+			}
+			
+			if(i == 0){
+				fileNewNames = fileNewNames + fileNewName;
+			}else{
+				fileNewNames = fileNewNames + ',' + fileNewName;
+			}
+			
+		}
+	}
+
+	// 上传的文件
+	var files = [];
+	var fileboxs = $("input[type='file'].textbox-value");
+	
+	if(fileboxs != null && fileboxs.length > 1){
+		
+		// 为什么游标从1开始，因为页面上上传多个文件上面还有一个filebox没有显示
+		for(var i=1;i<fileboxs.length;i++){
+			var fileList = $("input[type='file'].textbox-value")[i].files;
+			
+			if(fileList == null || fileList.length == 0){
+				$.messager.alert("操作提示", '请选择文件！', "info");
+				return ;
+			}else{
+				if(fileList.length > 1){
+					$.messager.alert("操作提示", '暂不支持一次上传多个文件！', "info");
+					return ;
+				}
+			}
+			var file = fileList[0];
+			files.push(file);
+		}
+	}
+
+	var formData = new FormData(); 
+	formData.append("files", files); //生成一对表单属性 
+	
+	// 页面隐藏域中填写上最近一次上传文件的userCode
+	if(userCode != null && userCode != ''){
+		$('#userCode_hidden').val(userCode);
+		
+		// 如果cookie中没有userCode，填写上
+		var userId = $.cookie('userId');
+		if(userId == null || userId == ''){
+			$.cookie('userId', userCode, { expires: 7, path: '/' });
+		}
+	}
+	
+	$.ajax({ 
+		type: "POST", //因为是传输文件，所以必须是post 
+		url: contextRootPath + '/ajaxuploadfiles?userCode=' + userCode + '&category=' + category + "&fileNewNames=" + fileNewNames + "&tags=" + tagstr, //对应的后台处理类的地址 
+		data: formData, 
+		processData: false, 
+		contentType: false, 
+		success: function (result) { 
+			$(function () {
+		        $.messager.alert("操作提示", result, "info", function () {
+		        	// 关闭弹窗
+		        	$('#dlg').dialog('close');
+		        	// datagrid重新加载数据
+		        	$('#dg').datagrid('reload');	// reload the user data
+		        });
+		    });
+		},
+		failure:function (result) {  
+			$.messager.alert("操作提示", result, "error");
+		}
+	}); 
+}
+
 function editFileInfo(){
 	
 	var refuuid = $("#refuuid_edit_1").val();
@@ -286,7 +392,7 @@ function appendRow(containerId){
 	
 	var htmlstr = '<tr id="' + rId + '" width="100%">'
 	+ '<td width="50%"><input id="file_edit_' + rId + '" name="file" label="文件" class="easyui-filebox" style="width:98%"/></td>'
-	+ '<td width="45%"><input id="fileNewName_edit_' + rId + '" name="fileNewName" class="easyui-textbox" label="重命名为" style="width:98%"/></td>'
+	+ '<td width="45%"><input id="multiFileNewName_edit_' + rId + '" name="multiFileNewName" class="easyui-textbox" label="重命名为" style="width:98%"/></td>'
 	+ '<td width="5%"><a href="#" class="easyui-linkbutton" data-options="iconCls:\'icon-remove\'" onclick="removeRow(\'' + rId + '\')"></a></td>'
 	+ '</tr>';
 	
